@@ -1,46 +1,46 @@
 // Import dependencies
-import express from "express";
-import bodyParser from "body-parser";
-import morgan from "morgan";
-import mongoose from "mongoose";
+import express from 'express';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import mongoose from 'mongoose';
+import chalk from 'chalk';
 
 // Import configuration
-import config from "./config";
+import config from './config';
 
 // Connect to db
 mongoose.connect(config.db.uri);
 
 // Import Routes
-import routes from "./api/routes/index.route";
+import routes from './api/routes/index.route';
 
 // Create express app
 const app = express();
 
 // Middlewares
-if (config.env === "development") {
-  app.use(morgan("dev")); // Console the logs
+if (config.env === 'development') {
+  app.use(morgan('dev')); // Console the logs
 }
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Allow CORS
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 
 // Routing
-app.use("/api", routes);
+app.use('/api', routes);
 
 // Start Server
-app.listen(config.port, "localhost", err => {
+app.listen(config.port, 'localhost', (err) => {
+  /* eslint-disable */
   if (err) {
-    console.log(err);
+    console.log(chalk.red(`${err}`));
   } else {
-    console.log(`API started on localhost:${config.port}`);
+    console.log(chalk.blue(`API started on localhost:${config.port}`));
   }
+  /* eslint-enable */
 });
