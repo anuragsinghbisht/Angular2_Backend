@@ -9,7 +9,10 @@ import chalk from 'chalk';
 import config from './config';
 
 // Connect to db
-mongoose.connect(config.db.uri);
+mongoose.connect(config.db.uri, {
+  useMongoClient: true
+});
+mongoose.Promise = global.Promise;
 
 // Import Routes
 import routes from './api/routes/index.route';

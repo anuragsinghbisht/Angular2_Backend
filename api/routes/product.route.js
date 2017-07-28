@@ -7,18 +7,22 @@ const ProductCtrl = new ProductController();
 router.route('/').get(ProductCtrl.getExercise).post(ProductCtrl.createExercise);
 
 router
-  .route('/:exercise_id/category')
+  .route('/category')
   .get(ProductCtrl.getCategories)
   .post(ProductCtrl.createCategory);
 
 router
-  .route('/:exercise_id/product')
-  .get(ProductCtrl.getProduct)
+  .route('/product')
+  .get(ProductCtrl.getProducts)
   .post(ProductCtrl.createProduct);
 
 router
-  .route('/:exercise_id/:category/product')
-  .get(ProductCtrl.getProduct)
+  .route('/:category/product')
+  .get(ProductCtrl.getProducts)
   .post(ProductCtrl.createProduct);
+
+router
+  .route('/:category/product/:productId')
+  .get(ProductCtrl.getProducts);
 
 export default router;

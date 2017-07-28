@@ -8,11 +8,15 @@ export class ProductController {
       if (err) {
         res.status(500).send(err);
       } else {
-        res.json({
-          id: exercise[0]._id,
-          title: exercise[0].title,
-          description: exercise[0].description
-        });
+        if(exercise.length) {
+          res.json({
+            id: exercise[0]._id,
+            title: exercise[0].title,
+            description: exercise[0].description
+          });
+        } else {
+          res.json(exercise);
+        }
       }
     });
   }
@@ -34,37 +38,38 @@ export class ProductController {
   }
 
   createProduct(req, res) {
-    const product = new Product({
-      category: req.body.category,
-      title: req.body.title,
-      url: req.body.url,
-      description: req.body.description,
-      imageHref: req.body.imageHref,
-      _creator: req.params.exercise_id
-    });
-    product.save(err => {
+    Exercise.find({}, (err, exercise) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        Exercise.findOne({ _id: req.params.exercise_id }, (err, exercise) => {
+        const product = new Product({
+          category: req.body.category,
+          title: req.body.title,
+          url: req.body.url,
+          description: req.body.description,
+          imageHref: req.body.imageHref,
+          _creator: exercise.length ? exercise[0]._id: ''
+        });
+        exercise[0].rows.push(product);
+        exercise[0].save();
+        product.save(err => {
           if (err) {
             res.status(500).send(err);
           } else {
-            exercise.rows.push(product);
-            exercise.save();
-            res.status(200).json({
-              message: 'Product created successfully'
-            });
+            res.status(200).json({ message: 'Product Created successfully'});
           }
         });
       }
     });
   }
 
-  getProduct(req, res) {
+  getProducts(req, res) {
     let searchObj = {};
     if (req.params.category) {
       searchObj.category = req.params.category;
+    }
+    if (req.params.productId) {
+      searchObj._id = req.params.productId;
     }
     Product.find(searchObj).populate('_creator').exec((err, product) => {
       if (err) {
@@ -76,20 +81,20 @@ export class ProductController {
   }
 
   createCategory(req, res) {
-    const category = new Category({
-      categoryName: req.body.category,
-      _creator: req.params.exercise_id
-    });
-    category.save(err => {
+    Exercise.find({}, (err, exercise) => {
       if (err) {
         res.status(500).send(err);
       } else {
-        Exercise.findOne({ _id: req.params.exercise_id }, (err, exercise) => {
+        const category = new Category({
+          categoryName: req.body.category,
+          _creator: exercise.length ? exercise[0]._id : ''
+        });
+        exercise[0].categories.push(category);
+        exercise[0].save();
+        category.save(err => {
           if (err) {
             res.status(500).send(err);
           } else {
-            exercise.categories.push(category);
-            exercise.save();
             res.status(200).json({
               message: 'Category created successfully'
             });
