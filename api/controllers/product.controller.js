@@ -3,6 +3,21 @@ import Product from '../../database/models/product.model';
 import Category from '../../database/models/category.model';
 
 export class ProductController {
+  createExercise(req, res) {
+    const exercise = new Exercise({
+      title: req.body.title,
+      description: req.body.description
+    });
+    exercise.save(err => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json({
+          message: 'Exercise created'
+        });
+      }
+    });
+  }
   getExercise(req, res) {
     Exercise.find({}).populate('rows').exec((err, exercise) => {
       if (err) {
@@ -20,23 +35,6 @@ export class ProductController {
       }
     });
   }
-
-  createExercise(req, res) {
-    const exercise = new Exercise({
-      title: req.body.title,
-      description: req.body.description
-    });
-    exercise.save(err => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(200).json({
-          message: 'Exercise created successfully'
-        });
-      }
-    });
-  }
-
   createProduct(req, res) {
     Exercise.find({}, (err, exercise) => {
       if (err) {
